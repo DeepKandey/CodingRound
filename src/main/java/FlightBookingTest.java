@@ -6,8 +6,6 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
@@ -33,17 +31,17 @@ public class FlightBookingTest {
 			String operSys = System.getProperty("os.name").toLowerCase();
 			if (operSys.contains("win")) {
 				platform = Platform.WIN10;
-				System.setProperty("webdriver.chrome.driver", System.getProperty("user.dir")+"/chromedriver.exe");
+				System.setProperty("webdriver.chrome.driver", System.getProperty("user.dir") + "/chromedriver.exe");
 				driver = new ChromeDriver(chromeOptions);
 				driver.manage().window().maximize();
 			} else if (operSys.contains("nix") || operSys.contains("nux") || operSys.contains("aix")) {
 				platform = Platform.LINUX;
-				System.setProperty("webdriver.chrome.driver", System.getProperty("user.dir")+"/chromedriver_linux");
+				System.setProperty("webdriver.chrome.driver", System.getProperty("user.dir") + "/chromedriver_linux");
 				driver = new ChromeDriver(chromeOptions);
 				driver.manage().window().maximize();
 			} else if (operSys.contains("mac")) {
 				platform = Platform.MAC;
-				System.setProperty("webdriver.chrome.driver", System.getProperty("user.dir")+"/chromedriver");
+				System.setProperty("webdriver.chrome.driver", System.getProperty("user.dir") + "/chromedriver");
 				driver = new ChromeDriver(chromeOptions);
 				driver.manage().window().maximize();
 			}
@@ -56,7 +54,6 @@ public class FlightBookingTest {
 		driver.get("https://www.cleartrip.com/");
 		waitFor(2000);
 		driver.findElement(By.id("OneWay")).click();
-
 		driver.findElement(By.id("FromTag")).clear();
 		driver.findElement(By.id("FromTag")).sendKeys("Bangalore");
 
@@ -88,7 +85,6 @@ public class FlightBookingTest {
 	public void tearDown() {
 		// close the browser
 		driver.quit();
-
 	}
 
 	private void waitFor(int durationInMilliSeconds) {
