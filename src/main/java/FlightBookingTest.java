@@ -1,40 +1,54 @@
 
-//import com.sun.javafx.PlatformUtil;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class FlightBookingTest {
 
 	public WebDriver driver;
-	public static Platform platform;
-	
+	public Platform platform;
+	public ChromeOptions chromeOptions;
+
 	@BeforeMethod
 	public void setUp() {
-        if (platform == null) {
-            String operSys = System.getProperty("os.name").toLowerCase();
-            if (operSys.contains("win")) {
-                platform = Platform.WIN10;
-                System.setProperty("webdriver.chrome.driver", "C:\\Users\\deepa\\Downloads\\chromedriver.exe");
-    			driver = new ChromeDriver();
-    			driver.manage().window().maximize();
-            } else if (operSys.contains("nix") || operSys.contains("nux")
-                    || operSys.contains("aix")) {
-                platform = Platform.LINUX;
-            } else if (operSys.contains("mac")) {
-                platform = Platform.MAC;
-            }
-        }
-    }
+		chromeOptions = new ChromeOptions();
+		Map<String, Object> prefs = new HashMap<String, Object>();
+		prefs.put("profile.default_content_setting_values.notifications", 1);
+		chromeOptions.setExperimentalOption("prefs", prefs);
+		if (platform == null) {
+			String operSys = System.getProperty("os.name").toLowerCase();
+			if (operSys.contains("win")) {
+				platform = Platform.WIN10;
+				System.setProperty("webdriver.chrome.driver", System.getProperty("user.dir")+"/chromedriver.exe");
+				driver = new ChromeDriver(chromeOptions);
+				driver.manage().window().maximize();
+			} else if (operSys.contains("nix") || operSys.contains("nux") || operSys.contains("aix")) {
+				platform = Platform.LINUX;
+				System.setProperty("webdriver.chrome.driver", System.getProperty("user.dir")+"/chromedriver_linux");
+				driver = new ChromeDriver(chromeOptions);
+				driver.manage().window().maximize();
+			} else if (operSys.contains("mac")) {
+				platform = Platform.MAC;
+				System.setProperty("webdriver.chrome.driver", System.getProperty("user.dir")+"/chromedriver");
+				driver = new ChromeDriver(chromeOptions);
+				driver.manage().window().maximize();
+			}
+		}
+	}
 
 	@Test
 	public void testThatResultsAppearForAOneWayJourney() {
@@ -47,19 +61,17 @@ public class FlightBookingTest {
 		driver.findElement(By.id("FromTag")).sendKeys("Bangalore");
 
 		// wait for the auto complete options to appear for the origin
-
-		waitFor(2000);
-		List<WebElement> originOptions = driver.findElement(By.id("ui-id-1")).findElements(By.tagName("li"));
+		waitFor(5000);
+		List<WebElement> originOptions = driver.findElements(By.xpath("//*[@id='ui-id-1']//li"));
 		originOptions.get(0).click();
 
-		driver.findElement(By.id("toTag")).clear();
-		driver.findElement(By.id("toTag")).sendKeys("Delhi");
+		driver.findElement(By.id("ToTag")).clear();
+		driver.findElement(By.id("ToTag")).sendKeys("Delhi");
 
 		// wait for the auto complete options to appear for the destination
-
-		waitFor(2000);
+		waitFor(5000);
 		// select the first item from the destination auto complete list
-		List<WebElement> destinationOptions = driver.findElement(By.id("ui-id-2")).findElements(By.tagName("li"));
+		List<WebElement> destinationOptions = driver.findElements(By.xpath("//*[@id='ui-id-2']//li"));
 		destinationOptions.get(0).click();
 
 		driver.findElement(By.xpath("//*[@id='ui-datepicker-div']/div[1]/table/tbody/tr[3]/td[7]/a")).click();
